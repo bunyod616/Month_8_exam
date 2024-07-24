@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+
+{% block title %}Home{% endblock %}
+
+{% block content %}
+
+<div class="profile">
+
+
+    <div class="pie_chart">
+        <div class="kirim">
+            <h1 style="margin: 10px;font-size: 25px;">Filling Wallet</h1>
+            <div class="donut-chart">
+                <div id="porcion1" class="recorte"><div class="quesito ios" data-rel="21"></div></div>
+                <div id="porcion2" class="recorte"><div class="quesito mac" data-rel="39"></div></div>
+                <div id="porcion3" class="recorte"><div class="quesito win" data-rel="31"></div></div>
+                <div id="porcionFin" class="recorte"><div class="quesito linux" data-rel="9"></div></div>
+                <p class="center-date">{{ total_income }} UZS</p> 
+            </div>    
+
+        </div>
+        <div class="chiqim">
+            <h1 style="margin: 10px;font-size: 25px;">Get Money</h1>
+
+            <div class="donut-chart">
+                    <div id="porcion4" class="recorte1"><div class="quesito ios" data-rel="{{ transaction.amount }}"></div></div>
+                    <div id="porcion5" class="recorte1"><div class="quesito mac" data-rel="{{ transaction.amount }}"></div></div>
+                    <div id="porcion6" class="recorte1"><div class="quesito win" data-rel="{{ transaction.amount }}"></div></div>
+                    <div id="porcionFin1" class="recorte1"><div class="quesito linux" data-rel="{{ transaction.amount }}"></div></div>
+                <p class="center-date" >{{ total_expense }} UZS</p> 
+            </div>    
+
+        </div>
+    </div>
+
+    <div class="in_out">
+        <div class="in">
+            <ul>
+                {% for transaction in transactions%}
+                    {% if transaction.type == 'IN' %}
+                        <div class="inn">
+                            <div class="div">
+                                <a>{{ transaction.amount }} so'm   |</a>
+                                <a>{{ transaction.date }}    |</a>
+                                <a>{{ transaction.category }}    |</a>
+                                <a>{{ transaction.description }}</a>
+                            </div>
+                        </div>
+                    {%endif%}
+                {% endfor %}
+            </ul>
+        </div>
+
+        <div class="out">
+            <ul>
+                {% for transaction in transactions%}
+                    {% if transaction.type == 'OUT' %}
+                        <div class="outt">
+                            <div class="div1">
+                                <a>{{ transaction.amount }} so'm    |</a>
+                                <a>{{ transaction.date }}    |</a>
+                                <a>{{ transaction.category }}      |</a>
+                                <a>{{ transaction.description }}</a>
+                            </div>
+                        </div>
+                    {%endif%}
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+</div>
+
+
+
+{%endblock%}

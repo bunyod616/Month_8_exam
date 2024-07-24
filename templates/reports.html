@@ -1,0 +1,172 @@
+{% extends "base.html" %}
+
+{% block title %}Home{% endblock %}
+
+{% block content %}
+
+
+<!-- <div style="width: 80%;height: 600px;border: 0px solid red;position: relative;left: 250px;top: 100px;display: flex;flex-direction: row;justify-content: space-between;">
+    <div class="box" style="margin: 40px auto;">
+
+        <p>Umumiy Kirim: {{ total_income }}</p>
+        <p>Umumiy Chiqim: {{ total_expense }}</p>
+        <p>Balance: {{ balance }}</p>
+
+        <div class="btn-container">
+            <button onclick="fetchStats('daily')">Kunlik</button>
+            <button onclick="fetchStats('weekly')">Haftalik</button>
+            <button onclick="fetchStats('monthly')">Oylik</button>
+        </div>
+
+        <div id="dailyStats" class="hidden">
+            <h2>Kunlik Hisob</h2>
+            <p>Kirim: <span id="dailyIncome"></span></p>
+            <p>Chiqim: <span id="dailyExpense"></span></p>
+            <div class="transaction-list" id="dailyTransactions">
+            
+        </div>
+
+        <div id="weeklyStats" class="hidden">
+            <h2>Haftalik Hisob</h2>
+            <p>Kirim: <span id="weeklyIncome"></span></p>
+            <p>Chiqim: <span id="weeklyExpense"></span></p>
+        </div>
+
+        <div id="monthlyStats" class="hidden">
+            <h2>Oylik Hisob</h2>
+            <p>Kirim: <span id="monthlyIncome"></span></p>
+            <p>Chiqim: <span id="monthlyExpense"></span></p>
+        </div>
+    </div>
+
+    <a href="{% url 'index' %}" class="button">Back</a>
+
+    </div> -->
+
+
+    <div style="width: 80%;height: 600px;border: 0px solid red;position: relative;left: 250px;top: 100px;display: flex;flex-direction: row;justify-content: space-between;" >
+        <div class="summary-box" id="summaryBox" style="margin: 40px auto;">
+            <h1 style="font-size: 25px; margin: 10px;">Expense Report</h1>
+            <div class="btn-container">
+                <button onclick="fetchStats('daily')" id="report">Dayly</button>
+                <button onclick="fetchStats('weekly')" id="report">Weekly</button>
+                <button onclick="fetchStats('monthly')" id="report">Monthly</button>
+            </div>
+
+            <div id="dailyStats" class="hidden">
+                <h2 style="font-size: 23px; margin: 10px;">Dayly report</h2>
+                <div class="box">
+                <p> <b style="font-size: 20px;">In</b>    <br><br><b id="sspan"><span id="dailyIncome"></span></b></p>
+                <p> <b style="font-size: 20px;">Out</b>    <br><br><b id="sspan"><span id="dailyExpense"></span></b></p>
+                </div>
+            </div>
+
+            <div id="weeklyStats" class="hidden">
+                <h2 style="font-size: 23px; margin: 10px;">Weekly report</h2>
+                <div class="box">
+                <p><b style="font-size: 20px;">In</b> <br><br> <b id="sspan"><span id="weeklyIncome"></span></b></p>
+                <p><b style="font-size: 20px;">Out</b> <br><br> <b id="sspan"><span id="weeklyExpense"></span></b></p>
+                </div>
+            </div>
+
+            <div id="monthlyStats" class="hidden">
+                <h2 style="font-size: 23px; margin: 10px;">Monthly report</h2>
+                <div class="box">
+                <p><b style="font-size: 20px;">In</b> <br><br> <b id="sspan"><span id="monthlyIncome"></span></b></p>
+                <p><b style="font-size: 20px;">Out</b> <br><br> <b id="sspan"><span id="monthlyExpense"></span></b></p>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        function fetchStats(period) {
+            let url;
+            if (period === 'daily') {
+                url = '{% url "daily_stats" %}';
+            } else if (period === 'weekly') {
+                url = '{% url "weekly_stats" %}';
+            } else if (period === 'monthly') {
+                url = '{% url "monthly_stats" %}';
+            }
+
+            fetch(url)
+                .then(response => response.json())
+                .then(data => {
+                    if (period === 'daily') {
+                        document.getElementById('dailyIncome').textContent = data.daily_income;
+                        document.getElementById('dailyExpense').textContent = data.daily_expense;
+
+                        let transactionTable = document.getElementById('dailyTransactionTable');
+                        transactionTable.innerHTML = '';
+                        data.daily_transactions.forEach(transaction => {
+                            let row = document.createElement('tr');
+                            row.innerHTML = `
+                                <td>${transaction.type === 'IN' ? 'Kirim' : 'Chiqim'}</td>
+                                <td>${transaction.amount}</td>
+                                <td>${transaction.description || 'N/A'}</td>
+                                <td>${transaction.date}</td>
+                            `;
+                            transactionTable.appendChild(row);
+                        });
+
+                        document.getElementById('dailyStats').classList.remove('hidden');
+                    } else if (period === 'weekly') {
+                        document.getElementById('weeklyIncome').textContent = data.weekly_income;
+                        document.getElementById('weeklyExpense').textContent = data.weekly_expense;
+
+                        let transactionTable = document.getElementById('weeklyTransactionTable');
+                        transactionTable.innerHTML = '';
+                        data.weekly_transactions.forEach(transaction => {
+                            let row = document.createElement('tr');
+                            row.innerHTML = `
+                                <td>${transaction.type === 'IN' ? 'Kirim' : 'Chiqim'}</td>
+                                <td>${transaction.amount}</td>
+                                <td>${transaction.description || 'N/A'}</td>
+                                <td>${transaction.date}</td>
+                            `;
+                            transactionTable.appendChild(row);
+                        });
+
+                        document.getElementById('weeklyStats').classList.remove('hidden');
+                    } else if (period === 'monthly') {
+                        document.getElementById('monthlyIncome').textContent = data.monthly_income;
+                        document.getElementById('monthlyExpense').textContent = data.monthly_expense;
+
+                        let transactionTable = document.getElementById('monthlyTransactionTable');
+                        transactionTable.innerHTML = '';
+                        data.monthly_transactions.forEach(transaction => {
+                            let row = document.createElement('tr');
+                            row.innerHTML = `
+                                <td>${transaction.type === 'IN' ? 'Kirim' : 'Chiqim'}</td>
+                                <td>${transaction.amount}</td>
+                                <td>${transaction.description || 'N/A'}</td>
+                                <td>${transaction.date}</td>
+                            `;
+                            transactionTable.appendChild(row);
+                        });
+
+                        document.getElementById('monthlyStats').classList.remove('hidden');
+                    }
+                });
+
+            document.getElementById('dailyStats').classList.add('hidden');
+            document.getElementById('weeklyStats').classList.add('hidden');
+            document.getElementById('monthlyStats').classList.add('hidden');
+
+            if (period === 'daily') {
+                document.getElementById('dailyStats').classList.remove('hidden');
+            } else if (period === 'weekly') {
+                document.getElementById('weeklyStats').classList.remove('hidden');
+            } else if (period === 'monthly') {
+                document.getElementById('monthlyStats').classList.remove('hidden');
+            }
+        }
+
+        // Show weekly stats by default
+        document.addEventListener("DOMContentLoaded", function() {
+            fetchStats('weekly');
+        });
+    </script>
+{% endblock %}

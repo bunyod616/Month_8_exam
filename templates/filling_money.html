@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block title %}Filling{% endblock %}
+
+{% block content %}
+    <div style="color: #b8b8c8;border: 0px solid red;width: 80%; height: 600px;position: relative;top: 95px;left: 250px;">
+    <div class="container" style="width: 65%;height: 530px;padding:10px;border-radius: 20px;text-align:center;margin:40px auto; background-color: #1b263b;">
+        <form method="post">
+            <h1 style="color: #b8b8c8;padding: 20px;text-align: center;font-size: 23px;">Put/take money</h1>
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button class="nmadir" style="margin: 0 auto;">Submit</button>
+        </form>
+    </div>
+    </div>
+{% endblock %}
